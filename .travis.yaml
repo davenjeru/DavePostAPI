@@ -1,0 +1,8 @@
+language: python
+python:
+  - "3.6"
+
+install: pip install -r requirements.txt
+
+script: nosetests ./davepostAPI/_tests/test_models.py --with-coverage coveralls --cover-package=./davepostAPI/models && coverage report
+after_success: coveralls
