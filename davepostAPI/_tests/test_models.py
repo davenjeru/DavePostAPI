@@ -1,7 +1,7 @@
 import unittest
 
-from ..models.post_model import Post, PostTransactionError, posts_list
-from ..models.user_model import User, UserTransactionError, users_list
+from davepostAPI.models.post_model import Post, PostTransactionError, posts_list
+from davepostAPI.models.user_model import User, UserTransactionError, users_list
 
 
 class ModelsTestCase(unittest.TestCase):
@@ -15,9 +15,6 @@ class ModelsTestCase(unittest.TestCase):
     def tearDown(self):
         users_list.clear()
         posts_list.clear()
-
-    def test_a_get_user_id(self):
-        self.assertEqual(chr(1), self.u.get_id())
 
     def test_create_user_pass(self):
         self.assertEqual('email@company.com', self.u.email)
