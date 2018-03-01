@@ -108,3 +108,4 @@ class AppTestCase(TestCase):
         self.assertIn(b'logged out successfully', rv.data)
         rv = self.client.post(api_v1.url_for(Logout))
         self.assert400(rv)
+        self.assertIn(b'no user in session', rv.data)
