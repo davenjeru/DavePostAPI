@@ -5,8 +5,9 @@ posts_list = []
 
 
 class PostTransactionError(BaseException):
-    def __init__(self, msg):
+    def __init__(self, msg, abort_code=400):
         self.msg = msg
+        self.abort_code = abort_code
 
 
 class Post(object):
@@ -83,7 +84,7 @@ class Post(object):
 
     def update(self, user, name: str, new_item: str):
         if user.id != self.user_id:
-            raise PostTransactionError('this post does not belong to the selected user')
+            raise PostTransactionError('this post does not belong to the selected user', 403)
 
         if name == 'title':
             self.__validate_post_details(name, new_item)
@@ -106,7 +107,7 @@ class Post(object):
 
     def delete(self, user):
         if user.id != self.user_id:
-            raise PostTransactionError('this post does not belong to the selected user')
+            raise PostTransactionError('this post does not belong to the selected user', 403)
 
         posts_list.remove(self)
         del self

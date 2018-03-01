@@ -14,8 +14,9 @@ class UserTransactionError(BaseException):
     This is the exception raised if there is an error when creating a user
     """
 
-    def __init__(self, msg):
+    def __init__(self, msg, abort_code=400):
         self.msg = msg
+        self.abort_code = abort_code
 
 
 class User(UserMixin, object):
