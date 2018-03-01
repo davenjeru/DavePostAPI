@@ -92,7 +92,3 @@ class ModelsTestCase(unittest.TestCase):
     def test_serialize(self):
         self.assertEqual(dict(email='email@company.com'), self.u.serialize)
         self.assertDictContainsSubset(dict(title='My post title.'), self.p.serialize)
-
-
-if __name__ == '__main__':
-    unittest.main()
