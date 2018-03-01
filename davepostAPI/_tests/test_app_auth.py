@@ -2,7 +2,7 @@ from flask_testing import TestCase
 
 from davepostAPI import app
 from davepostAPI.api.v1 import api_v1
-from davepostAPI.api.v1.auth import Login
+from davepostAPI.api.v1.auth import Login, Logout
 from davepostAPI.api.v1.auth import Register
 
 
@@ -100,3 +100,11 @@ class AppTestCase(TestCase):
         rv = self.login(None, password)
         self.assert400(rv)
         self.assertIn(b'missing', rv.data)
+
+    def test_a9_logout(self):
+        self.login('email@company.com', 'password.Pa55word')
+        rv = self.client.post(api_v1.url_for(Logout))
+        self.assert200(rv)
+        self.assertIn(b'logged out successfully', rv.data)
+        rv = self.client.post(api_v1.url_for(Logout))
+        self.assert400(rv)
