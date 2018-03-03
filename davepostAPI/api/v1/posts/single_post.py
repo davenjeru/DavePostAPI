@@ -1,6 +1,9 @@
 from flask_restplus import Resource
 from flask_restplus.namespace import Namespace
 
+from davepostAPI.api.v1.boilerplate import check_id_availability, safe_post_output
+from davepostAPI.models import posts_list
+
 posts_ns = Namespace('posts')
 
 
@@ -11,4 +14,4 @@ class SinglePost(Resource):
         """
         View a single post
         """
-        pass
+        return dict(post=safe_post_output(self, check_id_availability(post_id, posts_list, 'post')))
