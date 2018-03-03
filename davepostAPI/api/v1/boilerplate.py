@@ -2,7 +2,7 @@ from flask import url_for, request
 from flask_restplus import Resource
 from werkzeug.exceptions import BadRequest
 
-from davepostAPI.models import User
+from davepostAPI.models import User, Post
 
 
 class PayloadExtractionError(BaseException):
