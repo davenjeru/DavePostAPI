@@ -50,7 +50,16 @@ class AppTestCase(TestCase):
         rv = self.client.get(api_v1.url_for(SingleUserSinglePost, user_id=1, post_id=1), follow_redirects=True)
         self.assertIn(b'My post title.', rv.data)
 
-    def test_c5_user_deletes_post(self):
+    def test_c5_user_patches_post(self):
+        data = dict(email='email@company.com', password='password.Pa55word')
+        self.client.post(api_v1.url_for(Login), data=str(data), content_type='application/json')
+        data = dict(title='My Second Post Title')
+        rv = self.client.patch(api_v1.url_for(SingleUserSinglePost, user_id=1, post_id=1),
+                               data=str(data), content_type='application/json')
+        # self.assert200(rv)
+        self.assertIn(b'My Second Post Title', rv.data)
+
+    def test_c6_user_deletes_post(self):
         data = dict(email='email@company.com', password='password.Pa55word')
         self.client.post(api_v1.url_for(Login), data=str(data), content_type='application/json')
         rv = self.client.delete(api_v1.url_for(SingleUserAllPosts, user_id=1))

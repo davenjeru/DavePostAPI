@@ -86,12 +86,15 @@ class Post(object):
         if user.id != self.user_id:
             raise PostTransactionError('this post does not belong to the selected user', 403)
 
-        if name == 'title':
+        try:
             self.__validate_post_details(name, new_item)
+        except AssertionError as e:
+            raise PostTransactionError(e.args[0])
+
+        if name == 'title':
             if self.title == new_item:
                 raise PostTransactionError('{0} given matches the previous {0}'.format(name))
         elif name == 'body':
-            self.__validate_post_details(name, new_item)
             if self.body == new_item:
                 raise PostTransactionError('{0} given matches the previous {0}'.format(name))
 
