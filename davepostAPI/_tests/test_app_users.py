@@ -3,7 +3,7 @@ from flask_testing import TestCase
 from davepostAPI import app
 from davepostAPI.api.v1 import api_v1
 from davepostAPI.api.v1.auth import Login
-from davepostAPI.api.v1.users import AllUsers, SingleUser, SingleUserAllPosts
+from davepostAPI.api.v1.users import AllUsers, SingleUser, SingleUserAllPosts, SingleUserSinglePost
 
 
 class AppTestCase(TestCase):
@@ -45,6 +45,10 @@ class AppTestCase(TestCase):
         self.client.post(api_v1.url_for(Login), data=str(data), content_type='application/json')
         rv = self.create_post('My post title.', 'Something interesting for people to read.')
         self.assertEqual(201, rv.status_code)
+
+    def test_c4_user_views_post(self):
+        rv = self.client.get(api_v1.url_for(SingleUserSinglePost, user_id=1, post_id=1), follow_redirects=True)
+        self.assertIn(b'My post title.', rv.data)
 
     def test_c5_user_deletes_post(self):
         data = dict(email='email@company.com', password='password.Pa55word')
