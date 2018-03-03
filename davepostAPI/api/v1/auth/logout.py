@@ -2,7 +2,7 @@ from flask_login import current_user, logout_user
 from flask_restplus import Resource
 from flask_restplus.namespace import Namespace
 
-from davepostAPI.api.v1.auth.boilerplate import generate_auth_output
+from davepostAPI.api.v1.boilerplate import generate_auth_output
 
 auth_ns = Namespace('auth')
 

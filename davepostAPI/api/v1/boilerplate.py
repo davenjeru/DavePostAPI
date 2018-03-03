@@ -6,7 +6,7 @@ from davepostAPI.models import User
 
 
 class PayloadExtractionError(BaseException):
-    def __init__(self, msg: str, abort_code: int):
+    def __init__(self, msg: str, abort_code: int = 400):
         self.msg = msg
         self.abort_code = abort_code
 
@@ -79,3 +79,33 @@ def safe_user_output(resource: Resource, user: User):
     user_dict = user.serialize
     user_dict['url'] = url_for(api.endpoint('users_single_user'), user_id=user.id)
     return user_dict
+
+
+def check_id_availability(the_id: int, a_list: list, context: str):
+    """
+    Checks for the availability of an item's ID in a given list
+    :param the_id: the ID to be checked
+    :param a_list: the list from where to check from
+    :param context: used for displaying the error message
+    :return: the item if found, abort otherwise
+    """
+    for an_item in a_list:
+        if an_item.id == the_id:
+            return an_item
+    else:
+        raise PayloadExtractionError('{0} not found!'.format(context))
+
+
+def safe_post_output(resource: Resource, post: Post):
+    """
+    Creates a dictionary of Post details
+    :param resource:
+    :param post:
+    :return: dict
+    """
+    api = resource.api
+    post_dict = post.serialize
+    post_dict['post_url'] = url_for(api.endpoint('users_single_user_single_post'), user_id=post.user_id,
+                                    post_id=post.id)
+    post_dict['author_url'] = url_for(api.endpoint('users_single_user'), user_id=post.user_id)
+    return post_dict

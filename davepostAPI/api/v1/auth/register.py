@@ -2,9 +2,9 @@ from flask import url_for
 from flask_restplus import Resource, fields
 from flask_restplus.namespace import Namespace
 
-from davepostAPI.models import User, UserTransactionError
-from .boilerplate import get_validated_payload, extract_from_payload, generate_auth_output, \
+from davepostAPI.api.v1.boilerplate import get_validated_payload, extract_from_payload, generate_auth_output, \
     PayloadExtractionError
+from davepostAPI.models import User, UserTransactionError
 
 auth_ns = Namespace('auth')
 

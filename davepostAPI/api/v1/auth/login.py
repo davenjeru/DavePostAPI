@@ -2,7 +2,7 @@ from flask_login import login_user, LoginManager, current_user
 from flask_restplus import Resource, fields
 from flask_restplus.namespace import Namespace
 
-from davepostAPI.api.v1.auth.boilerplate import generate_auth_output, get_validated_payload, extract_from_payload, \
+from davepostAPI.api.v1.boilerplate import generate_auth_output, get_validated_payload, extract_from_payload, \
     PayloadExtractionError
 from davepostAPI.models import users_list
 
