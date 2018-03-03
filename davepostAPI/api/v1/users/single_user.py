@@ -1,6 +1,9 @@
+from flask import redirect
+from flask_login import current_user, login_required
 from flask_restplus import Resource
 from flask_restplus.namespace import Namespace
 
+from davepostAPI.api.v1.auth import Logout
 from davepostAPI.api.v1.boilerplate import safe_user_output, check_id_availability, PayloadExtractionError
 from davepostAPI.models import users_list, User
 
@@ -20,6 +23,7 @@ class SingleUser(Resource):
 
         return output
 
+    @login_required
     @users_ns.response(204, 'User has been deleted successfully')
     @users_ns.response(401, 'Not logged in hence unauthorized')
     @users_ns.response(403, 'Logged in but not allowed to perform this action on the current url')
@@ -34,4 +38,10 @@ class SingleUser(Resource):
         4. If the user re-registers, a new ID will be given to them, hence they are unable to access their previous posts
         5. This process is indeed irreversible
         """
-        pass
+        if current_user.id != user_id:
+            users_ns.abort(403)
+
+        this_user = check_id_availability(user_id, users_list, str(User.__name__))
+
+        users_list.remove(this_user)
+        return redirect(self.api.url_for(Logout), 204)
