@@ -2,7 +2,7 @@ from flask_restplus import Resource
 from flask_restplus.namespace import Namespace
 
 from davepostAPI.api.v1.boilerplate import check_id_availability, safe_post_output, PayloadExtractionError
-from davepostAPI.models import posts_list
+from davepostAPI.models import posts_list, Post
 
 posts_ns = Namespace('posts')
 
@@ -16,7 +16,7 @@ class SinglePost(Resource):
         """
         output = None
         try:
-            output = dict(post=safe_post_output(self, check_id_availability(post_id, posts_list, 'post')))
+            output = dict(post=safe_post_output(self, check_id_availability(post_id, posts_list, str(Post.__name__))))
         except PayloadExtractionError as e:
             posts_ns.abort(e.abort_code, e.msg)
         return output

@@ -24,4 +24,4 @@ class AppTestCase(TestCase):
     def test_b2_view_single_post_fail(self):
         rv = self.client.get(api_v1.url_for(SinglePost, post_id=1))
         self.assert400(rv)
-        self.assertIn(b'post not found!', rv.data)
+        self.assertIn(b'Post not found!', rv.data)

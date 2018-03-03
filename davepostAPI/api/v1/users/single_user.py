@@ -1,6 +1,9 @@
 from flask_restplus import Resource
 from flask_restplus.namespace import Namespace
 
+from davepostAPI.api.v1.boilerplate import safe_user_output, check_id_availability, PayloadExtractionError
+from davepostAPI.models import users_list, User
+
 users_ns = Namespace('users')
 
 
@@ -9,7 +12,13 @@ class SingleUser(Resource):
         """
         View a single user
         """
-        pass
+        output = None
+        try:
+            output = dict(user=safe_user_output(self, check_id_availability(user_id, users_list, str(User.__name__))))
+        except PayloadExtractionError as e:
+            users_ns.abort(e.abort_code, e.msg)
+
+        return output
 
     @users_ns.response(204, 'User has been deleted successfully')
     @users_ns.response(401, 'Not logged in hence unauthorized')
