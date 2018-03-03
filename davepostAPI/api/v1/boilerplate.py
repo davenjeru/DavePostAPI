@@ -109,3 +109,24 @@ def safe_post_output(resource: Resource, post: Post):
                                     post_id=post.id)
     post_dict['author_url'] = url_for(api.endpoint('users_single_user'), user_id=post.user_id)
     return post_dict
+
+
+def generate_post_output(resource: Resource, post: Post, method: str):
+    """
+    Generates output specific to the users namespace
+    :param resource: The resource that called this function
+    :param post: The user whose output should be generated
+    :param method: The HTTP method
+    :return: The output dictionary specific to the resource that called this function
+    :rtype: dict
+    """
+    output_dict = dict(post=safe_post_output(resource, post))
+
+    if resource.endpoint == 'users_single_user_all_posts':
+        if method == 'post':
+            output_dict['message'] = 'post created successfully'
+    elif resource.endpoint == 'users_single_user_single_post':
+        if method == 'patch':
+            output_dict['message'] = 'post modified successfully'
+
+    return output_dict

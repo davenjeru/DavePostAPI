@@ -48,11 +48,7 @@ class Register(Resource):
 
         try:
             payload = get_validated_payload(self)
-        except PayloadExtractionError as e:
-            auth_ns.abort(e.abort_code, e.msg)
-
-        list_of_names = ['email', 'password', 'confirm_password', 'security_question', 'security_answer']
-        try:
+            list_of_names = ['email', 'password', 'confirm_password', 'security_question', 'security_answer']
             email, password, confirm_password, security_question, \
             security_answer = extract_from_payload(payload, list_of_names)
         except PayloadExtractionError as e:
