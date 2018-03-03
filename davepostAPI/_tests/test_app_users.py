@@ -59,7 +59,14 @@ class AppTestCase(TestCase):
         # self.assert200(rv)
         self.assertIn(b'My Second Post Title', rv.data)
 
-    def test_c6_user_deletes_post(self):
+    def test_c6_user_deletes_single_post(self):
+        data = dict(email='email@company.com', password='password.Pa55word')
+        self.client.post(api_v1.url_for(Login), data=str(data), content_type='application/json')
+        self.create_post('My post title Number 2', 'Something interesting for people to read.')
+        rv = self.client.delete(api_v1.url_for(SingleUserSinglePost, user_id=1, post_id=1))
+        self.assertEqual(204, rv.status_code)
+
+    def test_c7_user_deletes_all_posts(self):
         data = dict(email='email@company.com', password='password.Pa55word')
         self.client.post(api_v1.url_for(Login), data=str(data), content_type='application/json')
         rv = self.client.delete(api_v1.url_for(SingleUserAllPosts, user_id=1))

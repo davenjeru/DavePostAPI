@@ -81,6 +81,7 @@ class SingleUserSinglePost(Resource):
 
         return response
 
+    @login_required
     @users_ns.response(204, 'Post deleted successfully')
     @users_ns.response(400, 'Bad request')
     @users_ns.response(401, 'Not logged in hence unauthorized')
@@ -93,4 +94,27 @@ class SingleUserSinglePost(Resource):
         2. This deletes the post whose ID is specified on the url
         3. This process is irreversible
         """
-        pass
+        if current_user.id != user_id:
+            users_ns.abort(403)
+
+        this_post = None
+        try:
+            check_id_availability(user_id, users_list, str(User.__name__))
+            this_post = check_id_availability(post_id, posts_list, str(Post.__name__))
+        except PayloadExtractionError as e:
+            users_ns.abort(e.abort_code, e.msg)
+
+        for post in posts_list:
+            if post.user_id == user_id and post.id == post_id:
+                this_post = post
+                break
+        else:
+            users_ns.abort(400, 'the requested user does not own this post')
+
+        try:
+            current_user.delete_post(this_post)
+        except PostTransactionError as a:
+            users_ns.abort(a.abort_code, a.msg)
+
+        response = self.api.make_response(None, 204)
+        return response
