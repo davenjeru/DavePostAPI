@@ -46,6 +46,12 @@ class AppTestCase(TestCase):
         rv = self.create_post('My post title.', 'Something interesting for people to read.')
         self.assertEqual(201, rv.status_code)
 
+    def test_c5_user_deletes_post(self):
+        data = dict(email='email@company.com', password='password.Pa55word')
+        self.client.post(api_v1.url_for(Login), data=str(data), content_type='application/json')
+        rv = self.client.delete(api_v1.url_for(SingleUserAllPosts, user_id=1))
+        self.assertEqual(204, rv.status_code)
+
     def test_d1_delete_user(self):
         rv = self.client.delete(api_v1.url_for(SingleUser, user_id=1))
         self.assert401(rv)

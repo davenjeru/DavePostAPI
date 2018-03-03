@@ -5,7 +5,7 @@ from flask_restplus.namespace import Namespace
 
 from davepostAPI.api.v1.boilerplate import check_id_availability, PayloadExtractionError, extract_from_payload, \
     get_validated_payload, generate_post_output
-from davepostAPI.models import users_list, User, posts_list
+from davepostAPI.models import users_list, User, posts_list, PostTransactionError
 
 users_ns = Namespace('users')
 post_model = users_ns.model('post_model', {
@@ -71,13 +71,18 @@ class SingleUserAllPosts(Resource):
             if a_post.title == title and a_post.body == body:
                 users_ns.abort(400, 'post already exists')
 
-        post = current_user.create_post(title, body)
+        post = None
+        try:
+            post = current_user.create_post(title, body)
+        except PostTransactionError as e:
+            users_ns.add_model(e.abort_code, e.msg)
         output = generate_post_output(self, post, 'post')
         response = self.api.make_response(output, 201)
         response.headers['location'] = url_for(self.api.endpoint('users_single_user_single_post'),
                                                user_id=post.user_id, post_id=post.id)
         return response
 
+    @login_required
     @users_ns.response(204, 'Post deleted successfully')
     @users_ns.response(400, 'Bad request')
     @users_ns.response(401, 'Not logged in hence unauthorized')
@@ -90,4 +95,17 @@ class SingleUserAllPosts(Resource):
         2. This deletes all posts that a user has created
         3. This process os of course irreversible
         """
-        pass
+        check_id_availability(user_id, users_list, str(User.__name__))
+
+        if current_user.id != user_id:
+            users_ns.abort(403)
+
+        my_posts_list = current_user.get_my_posts()
+
+        for a_post in my_posts_list:
+            try:
+                current_user.delete_post(a_post)
+            except PostTransactionError as e:
+                users_ns.abort(e.abort_code, e.msg)
+
+        return None, 204
